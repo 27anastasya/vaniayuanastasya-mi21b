@@ -1,0 +1,29 @@
+{
+  "menu": [
+    {
+      "name": "Mie Bakso Halus",
+      "price": 10000,
+      "id": 1
+    },
+    {
+      "name": "Mie Bakso Babat",
+      "price": 15000,
+      "id": 2
+    },
+    {
+      "name": "Mie Bakso Urat",
+      "price": 17000,
+      "id": 3
+    }
+  ],
+  "order": [
+    {
+      "name": "Vani",
+      "order": "Mie Bakso Halus",
+      "count": 1,
+      "price": 10000,
+      "total": 10000,
+      "id": 1
+    }
+  ]
+}
