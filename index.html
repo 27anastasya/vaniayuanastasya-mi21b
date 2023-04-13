@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      table,
+      tr,
+      th,
+      td {
+        border: 1px solid black;
+        padding: 5px;
+      }
+
+      table {
+        color: black;
+      }
+
+      thead {
+        color: black;
+      }
+      .box {
+        border: 1px solid black;
+        padding: 10px;
+        width: 120px;
+        height: 150px;
+        background-color: lightgray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      .bg {
+        width: 120px;
+        height: 190px;
+        background-color: white;
+      }
+      .container {
+        display: flex;
+      }
+      .box {
+        margin: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Baso Japri</h1>
+    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+    <p><div>
+      Nama Pemesan :
+      <input id="name" type="text" placeholder="Isi nama pemesan disini..." />
+    </div></p>
+    <div class="container">
+      <div class="box" id="pesan">
+        <div class="bg"></div>
+        <h5 id="pesan"></h5>
+        <p id="pesan"></p>
+        <p></p>
+        <button>Pesan</button>
+      </div>
+    </div>
+
+    <h1>Daftar Pesanan</h1>
+    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+    <table style="margin-top: 10px">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Pesanan</th>
+          <th>Jumlah</th>
+          <th>Harga</th>
+          <th>Total</th>
+          <th colspan="2" style="text-align: center">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="result"></tbody>
+    </table>
+    <script src="./axios.min.js"></script>
+    <script>
+      //CRUD EDIT
+      const editData = (id, name, order, count, price, total) => {
+        document.getElementById("name").value = name;
+        document.getElementById("order").value = order;
+        document.getElementById("count").value = count;
+        document.getElementById("price").value = price;
+        document.getElementById("total").value = total;
+        document.getElementById("button").innerText = "Batal";
+        document
+          .getElementById("button")
+          .setAttribute("onclick", `updateData(${id})`);
+      };
+
+      //CRUD UPDATE
+
+      // CRUD SAVE
+      const saveData = async () => {
+        let nameForm = document.getElementById("name").value;
+        let orderForm = document.getElementById("order").value;
+        let countForm = document.getElementById("count").value;
+        let priceForm = document.getElementById("price").value;
+        let totalForm = document.getElementById("total").value;
+        await axios
+          .post(`http://localhost:3000/menu`, {
+            name: nameForm,
+            order: orderForm,
+            count: countForm,
+            price: priceForm,
+            total: totalForm
+          })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+      };
+      // CRUD DELETE
+      const deleteData = async (id) => {
+        let text = "Yakin akan menghapus pesanan?";
+        if (confirm(text) == true) {
+          await axios
+            .delete(`http://localhost:3000/menu/${id}`)
+            .then((response) => {
+              console.log(response);
+            })
+            .catch((error) => {
+              console.log(error.message);
+            });
+        }
+      };
+      // CRUD GET
+      const getData = async () => {
+      await axios.get(`http://localhost:3000/order`)
+        .then((response) => {
+          let bucket = ``;
+          let total = 0;
+          let order = response.data;
+
+          if (order.length > 0) {
+            for (let i = 0; i < order.length; i++) {
+              bucket += `
+              <tr>
+                <td colspan="1" style="text-align: center">${i + 1}</td>
+                <td colspan="1" style="text-align: center">${order[i].name}</td>
+                <td colspan="1" style="text-align: center">${order[i].order}</td>
+                <td colspan="1" style="text-align: center">${order[i].count}</td>
+                <td colspan="1" style="text-align: center">${order[i].price}</td>
+                <td colspan="1" style="text-align: center">${order[i].total}</td>
+                <td colspan="1" style="text-align: center"><button onclick="deleteData(${order[i].id})">Batal</button></td>
+              </tr>`
+            }
+          } else {
+            bucket += `
+              <tr>
+                <td colspan="5" style="text-align: center">Data tidak ditemukan</td>
+              </tr>
+            `
+          }
+
+          document.getElementById('result').innerHTML = bucket;
+        })
+        .catch((error) => {
+          let bucket = `
+          <tr>
+            <td colspan="5" style="text-align: center">${error.message}</td>
+          </tr>
+        `
+          document.getElementById('result').innerHTML = bucket;
+        });
+    }
+    getData();
+  </script>
+</body>
+
+</html>
